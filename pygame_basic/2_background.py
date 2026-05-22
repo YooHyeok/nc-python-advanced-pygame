@@ -10,12 +10,18 @@ screen = pygame.display.set_mode((screen_width, screen_height)) # 캔버스 설�
 # 화면 타이틀 설정
 pygame.display.set_caption("YooHyeok Game") # 게임 이름
 
+# 배경 이미지 불러오기
+background = pygame.image.load('C:\\Users\\dq\\diquest\\study\\inflearn\\nado-python-advanced-game\\pygame_basic\\background.png')
+
 # 이벤트 루프: 실행되는 동안 발생하는 이벤트를 계속 감지하고 처리
 running = True # 게임 진행중 여부 Flag
 while running:
   for event in pygame.event.get(): # pygame에서 발생하는 모든 이벤트 추출
     if event.type == pygame.QUIT: # 게임창의 [X] 버튼을 통한 종료 이벤트
       running = False
+  screen.blit(background, (0, 0)) # 배경 이미지 불러오기 - 튜플 (x좌표, y좌표)
+  # screen.fill((0, 0, 255)) # 배경 색상으로 채우기
+  pygame.display.update() # 게임 화면 다시 그리기
 
 # pygmae 종료
 pygame.quit()
