@@ -18,7 +18,7 @@ character = pygame.image.load('C:\\Users\\~\\pygame_basic\\character.png')
 character_size = character.get_rect().size # 이미지 크기 반환
 character_width = character_size[0] # 가로
 character_height = character_size[1] # 세로
-character_x_pos = (screen_width / 2) - (character_height / 2) # 가로 위치(화면기준 중앙)
+character_x_pos = (screen_width / 2) - (character_width / 2) # 가로 위치(화면기준 중앙)
 character_y_pos = screen_height - character_height # 세로 위치(화면 기준 최하단)
 
 # 이벤트 루프: 실행되는 동안 발생하는 이벤트를 계속 감지하고 처리
