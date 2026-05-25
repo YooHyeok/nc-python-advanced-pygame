@@ -185,6 +185,8 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 
 - [4_keyboard_event.py](pygame_basic/4_keyboard_event.py)
   ```py
+  # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당
+
   # 이동할 좌표값
   to_x = 0
   to_y = 0
@@ -228,6 +230,96 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
     elif character_y_pos > screen_height - character_height: # 하단 최대 위치 입계값 : 스크린 세로높이 - 캐릭터 세로높이
       character_y_pos = screen_height - character_height
     
+  # 생략
+  ```
+
+### 예제5) fps(초당 프레임 수) 설정 및 이동 속도 보정
+
+#### FPS 설정
+1. `pygame.time.Clock()`으로 시계 객체(`clock`) 생성
+2. 게임 루프 내에서 매 프레임마다 `clock.tick(framerate)` 호출
+   - 인자(`framerate`): 초당 최대 프레임 수(FPS). 게임 루프가 1초에 몇 번 실행될지 제한
+   - 반환값(`dt`): delta - 직전 프레임 호출 이후 경과한 시간(밀리초, ms)
+3. FPS가 **높을수록** 부드럽고 빠르며, **낮을수록** 부자연스럽고 느림
+   - 예: `tick(60)` → 1초에 60번 화면 갱신, 프레임 간격 약 16ms
+   - 예: `tick(10)` → 1초에 10번 화면 갱신, 프레임 간격 100ms
+
+- [5_frame_per_second.py](pygame_basic/5_frame_per_second.py)
+  ```py
+  # FPS
+  clock = pygame.time.Clock()
+
+  # 생략
+  while running:
+    dt = clock.tick(60) # 초당 프레임수: 높을수록 부드럽고 빠르며, 낮을수록 부자연스럽고 느림.
+    # 생략
+
+  # 생략
+  ```
+
+#### 프레임별 이동 속도 보정 (dt 보정)
+
+##### 문제 상황
+캐릭터 이동 코드를 `character_x_pos += to_x`로만 작성하면, **FPS에 따라 캐릭터 속도가 달라지는 문제**가 발생한다.  
+`while` 루프 한 바퀴(=1프레임)마다 `+= to_x`가 1번씩 실행되기 때문에, FPS가 높을수록 1초 동안 누적 이동량이 비례해서 커지기 때문임.
+
+| FPS | 1프레임 이동 (`to_x = 5`) | 1초 이동 거리 |
+|---|---|---|
+| `tick(10)` | 5px | 5 × 10 = **50px/초** |
+| `tick(60)` | 5px | 5 × 60 = **300px/초** (6배 빠름) |
+
+→ 빠른 컴퓨터(60fps)에서는 캐릭터가 빠르게, 느린 컴퓨터(10fps)에서는 느리게 움직이는 일관성 없는 동작 발생.
+
+##### 해결 원리 (dt 보정)
+이동량에 `dt`(직전 프레임 경과 시간, ms)를 곱해주면, **"걸음 횟수(FPS)"가 많아질수록 "걸음 보폭(dt)"이 자동으로 작아져서** 결과적으로 1초당 이동거리가 항상 동일하게 유지됨.
+
+| FPS | dt(ms) | 1프레임 이동 (`to_x = 0.6`) | 1초 이동 거리 |
+|---|---|---|---|
+| `tick(10)` | 100 | 0.6 × 100 = 60px | 60 × 10 = **600px/초** |
+| `tick(60)` | ≈16.67 | 0.6 × 16.67 ≈ 10px | 10 × 60 = **600px/초** |
+
+→ FPS가 달라도 **초당 600px**로 항상 동일한 이동 속도 보장.
+
+##### 구현 방법
+1. 이동 속도(`character_spped`)의 **단위가 바뀜**
+   - 보정 전: `픽셀/프레임` (예: `5`)
+   - 보정 후: `픽셀/밀리초` (예: `0.6` → 초당 600px)
+2. 좌표 누적 계산식에 `* dt`를 곱해 시간 비례로 보정
+   - `character_x_pos += to_x * dt`
+   - `character_y_pos += to_y * dt`
+3. 결과: 어떤 FPS 환경에서도 캐릭터가 **일정한 속도**로 이동 (FPS 독립적인 게임 로직 완성)
+
+- [5_frame_per_second.py](pygame_basic/5_frame_per_second.py)
+  ```py
+  # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당
+
+  # 이동할 좌표값
+  to_x = 0
+  to_y = 0
+
+  # 생략
+
+  # 이동속도 (단위: 픽셀/밀리초 → 초당 600px)
+  character_spped = 0.6
+
+  # 이벤트 루프: 실행되는 동안 발생하는 이벤트를 계속 감지하고 처리
+  running = True # 게임 진행중 여부 Flag
+  while running:
+    '''
+    가정) 케릭터가 1초동안 100만큼 이동  
+    A) 10 fps일 경우 - 1번에 10만큼 이동 = 10 * 10
+    B) 20 fps일 경우 - 1번에 5만큼 이동 = 5 * 20
+    '''
+    dt = clock.tick(10) # 초당 프레임수: 높을수록 부드럽고 빠르며, 낮을수록 부자연스럽고 느림.
+    # 생략
+    
+      # 생략
+
+    character_x_pos += to_x * dt # 프레임별 이동 속도 보정
+    character_y_pos += to_y * dt
+
+    # 생략
+
   # 생략
   ```
 
