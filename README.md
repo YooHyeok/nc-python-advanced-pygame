@@ -159,7 +159,7 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
   character_size = character.get_rect().size # 이미지 크기 반환
   character_width = character_size[0] # 가로
   character_height = character_size[1] # 세로
-  character_x_pos = (screen_width / 2) - (character_height / 2) # 가로 위치(화면기준 중앙) : 
+  character_x_pos = (screen_width / 2) - (character_width / 2) # 가로 위치(화면기준 중앙) : 
   character_y_pos = screen_height - character_height # 세로 위치(화면 기준 최하단)
 
   # 이벤트 루프
@@ -312,7 +312,7 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
     '''
     dt = clock.tick(10) # 초당 프레임수: 높을수록 부드럽고 빠르며, 낮을수록 부자연스럽고 느림.
     # 생략
-    
+
       # 생략
 
     character_x_pos += to_x * dt # 프레임별 이동 속도 보정
@@ -321,6 +321,61 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
     # 생략
 
   # 생략
+  ```
+
+### 예제6) 충돌 처리
+
+#### A) 적 이미지 출력
+  1. enemy 변수에 이미지 파일 경로 할당
+  2. Surface 객체를 할당한 변수 screen에 blit(file, axis) 함수에 매개변수로 전달
+      - 첫번째 매개변수에 이미지파일 경로 할당
+      - 두번째 매개변수에 이미지를 출력할 초기 시작 좌표 할당.  
+        가로/세로 - 화면 기준 중앙 출력
+  3. 게임 실행 루프내에서 blit() 함수 호출
+  4. 전체 화면 또는 일부 영역을 갱신을 위해 루프내에서 pygame.display.update() 호출
+
+#### B) 적(고정) ↔ 캐릭터(이동) 간 충돌 처리
+  1. 충돌 처리를 위한 적, 캐릭터 사각형(rect) 정보 수집
+  2. 수집된 rect 정보기준 충돌여부 확인
+     - 캐릭터사각형정보객체.colliderect(적사각형정보객체)
+  3. 충돌시 게임 종료
+
+- [6_collision.py](pygame_basic/6_collision.py)
+  ```py
+  # 생략
+
+  # 적 enemy 캐릭터 추가
+  enemy = pygame.image.load('C:\\Users\\~\\pygame_basic\\enemy.png')
+  enemy_size = enemy.get_rect().size # 이미지 크기 반환
+  enemy_width = enemy_size[0] # 가로
+  enemy_height = enemy_size[1] # 세로
+  enemy_x_pos = (screen_width / 2) - (enemy_width / 2) # 가로 위치(화면기준 중앙)
+  enemy_y_pos = (screen_height / 2) - (enemy_height / 2) # 세로 위치(화면기준 중앙)
+
+  # 생략
+  running = True # 게임 진행중 여부 Flag
+  while running:
+    # 생략
+
+    # 충돌 처리를 위한 rect 정보 업데이트(현재 좌표)
+    character_rect = character.get_rect() #캐릭터 사각형 정보
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    enemy_rect = enemy.get_rect() # 적 사각형 정보
+    enemy_rect.left = enemy_x_pos
+    enemy_rect.top = enemy_y_pos
+    
+    # 충돌 체크 - 종료
+    if character_rect.colliderect(enemy_rect): # 사각형 기준 충돌 여부 확인 함수
+      print("충돌했어요")
+      running = False
+
+    screen.blit(enemy, (enemy_x_pos, enemy_y_pos)) # 적 이미지 불러오기 - 튜플 (x좌표, y좌표)
+    # 생략
+
+  # pygmae 종료
+  pygame.quit()
   ```
 
 </details>
