@@ -11,7 +11,7 @@ screen = pygame.display.set_mode((screen_width, screen_height)) # 캔버스 설�
 pygame.display.set_caption("YooHyeok Game") # 게임 이름
 
 # 배경 이미지 불러오기
-background = pygame.image.load('C:\\Users\\~\\pygame_basic\\background.png')
+background = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\background.png')
 
 # 이벤트 루프: 실행되는 동안 발생하는 이벤트를 계속 감지하고 처리
 running = True # 게임 진행중 여부 Flag

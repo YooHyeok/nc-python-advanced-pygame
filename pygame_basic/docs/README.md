@@ -1,14 +1,19 @@
 # [루트/README.md](../README.md)
+# [프로젝트: 오락실 팡 게임](../pygame_project/README.md)
 
+# 예제1) 환경설정 & 프레임
+## 목차
+1. 기본 프레임 설정
+2.  이벤트루프 설정
 
-# 예제1) 기본 프레임 설정, 이벤트루프 설정
+<br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](docs/image.png)
+![alt text](image.png)
 ## 전체 코드
-- [1_create_frame.py](1_create_frame.py)
+- [1_create_frame.py](../1_create_frame.py)
   ```py
   import pygame
 
@@ -67,12 +72,19 @@
 <hr>
 <br>
 
-# 예제2) 배경 채우기
+# 예제2) 배경
+## 목차
+- 배경 채우기
+  1. blit(): 이미지 로드 
+  2. fill(): 색상 채우기
+
+<br>
+
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](docs/image-1.png)
+![alt text](image-1.png)
 
 배경을 적용하는 방식으로는 이미지 파일 로드인 blit()과 색상 채우기 fill() 2가지 방식이 있다.  
 두 방식 모두 이벤트 루프를 구현한 while문 내에서 실시간으로 호출한다.  
@@ -90,12 +102,12 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 3. 게임 실행 루프내에서 blit() 함수 호출
 4. 전체 화면 또는 일부 영역을 갱신을 위해 루프내에서 pygame.display.update() 호출
 
-- [2_background.py](2_background.py)
+- [2_background.py](../2_background.py)
   ```py
   # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당
 
   # 배경 이미지 불러오기
-  background = pygame.image.load('C:\\Users\\~\\pygame_basic\\background.png')
+  background = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\background.png')
 
   # 이벤트 루프
   while running:
@@ -114,12 +126,12 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 3. 게임 실행 루프내에서 fill(rgb) 함수 호출
 4. 전체 화면 또는 일부 영역을 갱신을 위해 루프내에서 pygame.display.update() 호출
 
-- [2_background.py](2_background.py)
+- [2_background.py](../2_background.py)
   ```py
   # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당
 
   # 배경 이미지 불러오기
-  background = pygame.image.load('C:\\Users\\~\\pygame_basic\\background.png')
+  background = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\background.png')
 
   # 이벤트 루프
   while running:
@@ -135,12 +147,16 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 <hr>
 <br>
 
-# 예제3) 캐릭터 출력
+# 예제3) 캐릭터
+## 목차
+- 캐릭터 출력
+
+<br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](docs/image-2.png)
+![alt text](image-2.png)
 
 1. character 변수에 이미지 파일 경로 할당
 2. Surface 객체를 할당한 변수 screen에 blit(file, axis) 함수에 매개변수로 전달
@@ -150,12 +166,12 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 3. 게임 실행 루프내에서 blit() 함수 호출
 4. 전체 화면 또는 일부 영역을 갱신을 위해 루프내에서 pygame.display.update() 호출
 
-- [3_main_sprite.py](3_main_sprite.py)
+- [3_main_sprite.py](../3_main_sprite.py)
   ```py
   # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당, 배경 이미지 불러오기
 
   # 스프라이트(캐릭터) 이미지 불러오기
-  character = pygame.image.load('C:\\Users\\~\\pygame_basic\\character.png')
+  character = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\character.png')
   # 스프라이트(캐릭터) 출력 위치 지정
   character_size = character.get_rect().size # 이미지 크기 반환
   character_width = character_size[0] # 가로
@@ -177,19 +193,24 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 <hr>
 <br>
 
-# 예제4) 캐릭터 이동: 키보드 이벤트
+# 예제4) 키보드 이벤트
+## 목차
+- 캐릭터 이동
+- 임계값 적용
+
+<br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](docs/move.gif)
+![alt text](move.gif)
 
 1. 이벤트 루프 - 방향키
    - 키 입력 : x, y좌표 이동 값(5) 제어
    - 키 해제 : 좌표 이동 stop
 2. 가로,세로 영역 임계값 처리
 
-- [4_keyboard_event.py](4_keyboard_event.py)
+- [4_keyboard_event.py](../4_keyboard_event.py)
   ```py
   # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당
 
@@ -244,12 +265,17 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 <hr>
 <br>
 
-# 예제5) fps(초당 프레임 수) 설정 및 이동 속도 보정
+# 예제5) FPS
+## 목차
+1. fps 설정
+2. 이동속도 보정
+
+<br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](docs/fps-60.gif)
+![alt text](fps-60.gif)
 
 ## FPS 설정
 1. `pygame.time.Clock()`으로 시계 객체(`clock`) 생성
@@ -260,7 +286,7 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
    - 예: `tick(60)` → 1초에 60번 화면 갱신, 프레임 간격 약 16ms
    - 예: `tick(10)` → 1초에 10번 화면 갱신, 프레임 간격 100ms
 
-- [5_frame_per_second.py](5_frame_per_second.py)
+- [5_frame_per_second.py](../5_frame_per_second.py)
   ```py
   # FPS
   clock = pygame.time.Clock()
@@ -276,9 +302,9 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 ## 프레임별 이동 속도 보정 (dt 보정)
 
 ### fps 60
-  ![alt text](docs/fps-60.gif)
+  ![alt text](fps-60.gif)
 ### fps 10
-  ![alt text](docs/fps-10.gif)
+  ![alt text](fps-10.gif)
 
 ### 문제 상황
 캐릭터 이동 코드를 `character_x_pos += to_x`로만 작성하면, **FPS에 따라 캐릭터 속도가 달라지는 문제**가 발생한다.  
@@ -310,7 +336,7 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
    - `character_y_pos += to_y * dt`
 3. 결과: 어떤 FPS 환경에서도 캐릭터가 **일정한 속도**로 이동 (FPS 독립적인 게임 로직 완성)
 
-- [5_frame_per_second.py](5_frame_per_second.py)
+- [5_frame_per_second.py](../5_frame_per_second.py)
   ```py
   # 생략) pygame import 및 초기화, 화면 설정 및 Surface 객체 변수 할당
 
@@ -345,7 +371,7 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
   ```
 
 ## 최종 보정본
-  ![alt text](docs/fps-pace.gif)
+  ![alt text](fps-pace.gif)
 
 </details>
 
@@ -354,11 +380,16 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 <br>
 
 # 예제6) 충돌 처리
+## 목차
+- 적 이미지 출력
+- 적 ↔ 캐릭터 간 충돌 처리
+
+<br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](docs/collision.gif)
+![alt text](collision.gif)
 
 ## A) 적 이미지 출력
   1. enemy 변수에 이미지 파일 경로 할당
@@ -375,12 +406,12 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
      - 캐릭터사각형정보객체.colliderect(적사각형정보객체)
   3. 충돌시 게임 종료
 
-- [6_collision.py](6_collision.py)
+- [6_collision.py](../6_collision.py)
   ```py
   # 생략
 
   # 적 enemy 캐릭터 추가
-  enemy = pygame.image.load('C:\\Users\\~\\pygame_basic\\enemy.png')
+  enemy = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\enemy.png')
   enemy_size = enemy.get_rect().size # 이미지 크기 반환
   enemy_width = enemy_size[0] # 가로
   enemy_height = enemy_size[1] # 세로
@@ -418,12 +449,17 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 <hr>
 <br>
 
-# 예제7) 텍스트 출력(타이머)
+# 예제7) 텍스트
+## 목차
+- 폰트 정의
+- 경과시각 계산 및 출력
+
+<br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](./docs/texttimer.gif)
+![alt text](texttimer.gif)
 
 1. 폰트 정의 및 변수 할당: `game_font = pygame.font.Font(폰트, 크기)` 
 2. 게임 제한 시간(총 시간) 정의
@@ -454,7 +490,7 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
     ```
 6. 게임 종료 전 2초 대기: `pygame.time.delay(2000)`
 
-- [7_text.py](/pygame_basic/7_text.py)
+- [7_text.py](../7_text.py)
   ```py
   # 생략
 
@@ -491,6 +527,67 @@ while 외부에서 처리할 수 있으나, 매 프레임 화면을 처음부터
 
   # pygmae 종료
   pygame.quit()
+  ```
+
+</details>
+<br>
+<hr>
+<br>
+
+
+# 예제8) 게임 개발 프레임
+pygame 라이브러리를 활용하여 기본적으로 구현할 프레임 템플릿 코드 구성
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+
+
+- [8_frame.py](../8_frame.py)
+  ```py
+  import pygame
+  ####################################################################################################################################
+  # 0. 기본 초기화(필수 설정)
+
+  pygame.init() # 초기화 (반드시 필요)
+
+  # 화면 크기 설정
+  screen_width = 480 # 가로 크기
+  screen_height = 640 # 세로 크기
+  screen = pygame.display.set_mode((screen_width, screen_height)) # 캔버스 설정 Surface 객체 변수 할당
+
+  # 화면 타이틀 설정
+  pygame.display.set_caption("YooHyeok Game") # 게임 이름
+
+  # FPS
+  clock = pygame.time.Clock()
+
+  ####################################################################################################################################
+  # 1. 사용자 게임 초기화 (배경화면, 게임 이미지, 좌표, 속도, 폰트 등)
+
+  running = True
+  while running:
+    dt = clock.tick(30)
+
+    # 2. 이벤트 처리 (키보드, 마우스 등)
+    for event in pygame.event.get():
+      if event.type == pygame.QUIT:
+        running = False
+      
+      
+    # 3. 게임 캐릭터 위치 정의
+
+    # 4. 충돌 처리
+
+    # 5. 화면에 렌더링
+
+    pygame.display.update() # 게임 화면 다시 그리기
+
+  pygame.time.delay(2000) # 2초 대기
+
+  # pygmae 종료
+  pygame.quit()
+
   ```
 
 </details>

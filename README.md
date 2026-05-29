@@ -8,7 +8,7 @@ pygame이란?
   ```bash
   pip install pygame
   ```
-## [01) 기본기](pygame_basic/README.md)
+## [01) pygame 기본기](pygame_basic/docs/README.md)
 
 ## 02) 퀴즈(똥피하기)
 
