@@ -1,3 +1,5 @@
+from pathlib import Path
+
 import pygame
 
 pygame.init() # 초기화 (반드시 필요)
@@ -14,10 +16,10 @@ pygame.display.set_caption("YooHyeok Game") # 게임 이름
 clock = pygame.time.Clock()
 
 # 배경 이미지 불러오기
-background = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\background.png')
+background = pygame.image.load(str(Path(__file__).resolve().parent / "img" / "background.png"))
 
 # 스프라이트(캐릭터) 이미지 불러오기
-character = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\character.png')
+character = pygame.image.load(str(Path(__file__).resolve().parent / "img" / "character.png"))
 character_size = character.get_rect().size # 이미지 크기 반환
 character_width = character_size[0] # 가로
 character_height = character_size[1] # 세로
@@ -32,7 +34,7 @@ to_y = 0
 character_spped = 0.6
 
 # 적 enemy 캐릭터 추가
-enemy = pygame.image.load('C:\\Users\\~\\pygame_basic\\img\\enemy.png')
+enemy = pygame.image.load(str(Path(__file__).resolve().parent / "img" / "enemy.png"))
 enemy_size = enemy.get_rect().size # 이미지 크기 반환
 enemy_width = enemy_size[0] # 가로
 enemy_height = enemy_size[1] # 세로

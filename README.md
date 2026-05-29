@@ -9,8 +9,5 @@ pygame이란?
   pip install pygame
   ```
 ## [01) pygame 기본기](pygame_basic/docs/README.md)
-
-## 02) 퀴즈(똥피하기)
-
-## 03) 프로젝트(오락실 팡 게임)
+## [02) 프로젝트(오락실 팡 게임)](pygame_project/docs/README.md)
 

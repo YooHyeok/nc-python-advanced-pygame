@@ -1,5 +1,5 @@
-# [루트/README.md](../README.md)
-# [프로젝트: 오락실 팡 게임](../pygame_project/README.md)
+# [루트/README.md](../../README.md)
+# [프로젝트: 오락실 팡 게임](../../pygame_project/docs/README.md)
 
 # 예제1) 환경설정 & 프레임
 ## 목차
