@@ -15,7 +15,7 @@ pygame.display.set_caption("YooHyeok Pang") # 게임 이름
 # FPS
 clock = pygame.time.Clock()
 
-# 1. 사용자 게임 초기화 (배경화면, 게임 이미지, 좌표, 속도, 폰트 등)
+# 사용자 게임 초기화 (배경화면, 게임 이미지, 좌표, 속도, 폰트 등)
 
 # background = pygame.image.load(str(Path(__file__).resolve().parent / "img" / "background.png"))
 background = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "background.png"))
@@ -33,17 +33,12 @@ running = True
 while running:
   dt = clock.tick(30)
 
-  # 2. 이벤트 처리 (키보드, 마우스 등)
+  # 이벤트 처리 (키보드, 마우스 등)
   for event in pygame.event.get():
     if event.type == pygame.QUIT:
       running = False
     
-    
-  # 3. 게임 캐릭터 위치 정의
-
-  # 4. 충돌 처리
-
-  # 5. 화면에 렌더링
+  # 화면에 렌더링
   screen.blit(background, (0, 0))
   screen.blit(stage, (0, screen_height - stage_height))
   screen.blit(character, (character_x_pos, character_y_pos))
