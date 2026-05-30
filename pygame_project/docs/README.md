@@ -80,6 +80,23 @@ a) 배경 출력
       - 첫번째 매개변수에 이미지파일 경로 할당
       - 두번째 매개변수에 이미지를 출력할 초기 시작 좌표 할당.  
   3. 게임 실행 루프내에서 blit() 함수 호출
+- [1_frame_background_stage_character.py](../1_frame_background_stage_character.py)
+  ```py
+  # 생략
+    
+  # background = pygame.image.load(str(Path(__file__).resolve().parent / "img" / "background.png"))
+  background = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "background.png"))
+
+  running = True
+  while running:
+    # 생략
+      
+    # 화면에 렌더링
+    screen.blit(background, (0, 0))
+    pygame.display.update() # 게임 화면 다시 그리기
+
+  # 생략
+  ```
 
 b) 스테이지 출력
   1. stage 변수에 이미지 파일 경로 할당
@@ -88,6 +105,22 @@ b) 스테이지 출력
       - 두번째 매개변수에 이미지를 출력할 초기 시작 좌표 할당.  
         세로: 화면 기준 최하단 (스크린 높이 - 스테이지 높이)
   3. 게임 실행 루프내에서 blit() 함수 호출
+- [1_frame_background_stage_character.py](../1_frame_background_stage_character.py)
+  ```py
+  # 생략
+  stage = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "stage.png"))
+  stage_size = stage.get_rect().size
+
+  running = True
+  while running:
+    # 생략
+      
+    # 화면에 렌더링
+    screen.blit(stage, (0, screen_height - stage_height))
+    pygame.display.update() # 게임 화면 다시 그리기
+
+  # 생략
+  ```
 
 c) 캐릭터 출력
   1. character 변수에 이미지 파일 경로 할당
@@ -101,11 +134,6 @@ c) 캐릭터 출력
   ```py
   # 생략
     
-  # background = pygame.image.load(str(Path(__file__).resolve().parent / "img" / "background.png"))
-  background = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "background.png"))
-
-  stage = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "stage.png"))
-  stage_size = stage.get_rect().size
   stage_height = stage_size[1] # 스테이지의 높이 위에 캐릭터를 두기 위해 사용
   
   character = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "character.png"))
@@ -120,8 +148,6 @@ c) 캐릭터 출력
     # 생략
       
     # 화면에 렌더링
-    screen.blit(background, (0, 0))
-    screen.blit(stage, (0, screen_height - stage_height))
     screen.blit(character, (character_x_pos, character_y_pos))
     pygame.display.update() # 게임 화면 다시 그리기
 
@@ -182,6 +208,193 @@ c) 캐릭터 출력
   pygame.quit()
 
   ```
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 2) 무기와 키보드 이벤트
+## 목차
+
+### 키보드 이벤트  
+  1. 캐릭터 이동
+    - 임계값 설정  
+  3. 무기 발사(출력)
+    - 무기 위치 이동, 최상단 근접시 제거
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](moveandshoot.gif)
+### 키보드 이벤트  
+1. 케릭터 이동
+    - [2_weapon_keyevent.py](../2_weapon_keyevent.py)
+      ```py
+      running = True
+      while running:
+        # 생략
+
+        # 이벤트 처리 (키보드, 마우스 등)
+        for event in pygame.event.get():
+          if event.type == pygame.QUIT:
+            running = False
+          if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_LEFT: # 캐릭터를 좌측으로 이동
+              character_to_x -= character_speed
+            elif event.key == pygame.K_RIGHT: # 캐릭터를 우측으로 이동
+              character_to_x += character_speed
+
+          # 방향키 해제시 stop
+          if event.type == pygame.KEYUP:
+            if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+              character_to_x = 0
+
+        # 게임 캐릭터 위치 정의
+        character_x_pos += character_to_x
+
+        # 생략
+
+      # 생략
+      ```
+2. 임계값 설정
+    - [2_weapon_keyevent.py](../2_weapon_keyevent.py)
+      ```py
+      # 생략
+      running = True
+      while running:
+        # 생략
+
+        # 임계값
+        if character_x_pos < 0:
+          character_x_pos = 0
+        elif character_x_pos > screen_width - character_width:
+          character_x_pos = screen_width - character_widt
+          
+        # 생략
+
+      # 생략
+      ```
+
+3. 무기 발사(출력)
+    - 무기 정의 및 키보드 이벤트
+      ```py
+      # 무기
+      weapon = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "weapon.png"))
+      weapon_size = weapon.get_rect().size
+      weapon_width = weapon_size[0]
+
+      # 무기목록 (1회 N발 발사)
+      weapons = []
+      weapon_speed = 10 # 무기 이동 속도
+
+      running = True
+      while running:
+        # 생략
+
+        # 이벤트 처리 (키보드, 마우스 등)
+        for event in pygame.event.get():
+          if event.type == pygame.KEYDOWN:
+            # 생략
+            # 무기 발사
+            elif event.key == pygame.K_SPACE:
+              weapon_x_pos = character_x_pos + (character_width / 2) - (weapon_width / 2) # 무기 위치 : 케릭터 중간위치
+              weapon_y_pos = character_y_pos # 무기 위치 : 케릭터 상단위치
+              weapons.append([weapon_x_pos, weapon_y_pos])
+      ```
+      - 발사될 무기는 배열로 정의하며, 무기의 속도는 10으로 정의한다.  
+        무기를 배열로 정의하는 이유는 실시간으로 변경되는 캐릭터의 위치 기준으로 무기의 위치가 변경되기 때문에 SPACE 키가 입력되었을 때 배열에 정의하도록 구현하기 위해서이다.  
+      - 발사될 무기는 SPACE 키가 입력되었을 때  캐릭터의 중간, 최상단에 위치시키고, 무기 배열에 추가한다.  
+
+    - 무기 위치 조정
+      ```py
+      # 무기 위치 조정: 100(x), 200(y) → 180, 160, 140, ... / 500(x), 200(y) → 180, 160, 140, ...
+      weapons = [ # 무기 위치 위로 발사 (출력할 무기 목록 할당)
+        [w[0], w[1] - weapon_speed] for w in weapons 
+          if w[1] > 0 # 무기 최상단 접근시 삭제: y좌표가 0보다 클 경우에만 무기 출력(출력할 무기 목록 할당)
+      ]
+      ```
+      - 무기의 위치는 출력 후 위로 이동해야 하기 때문에 y좌표의 값을 게임 루프가 돌때마다 무기 속도만큼 감소시킨다.  
+      - 반복문을 통해 무기 배열로 부터 x좌표와 y좌표를 얻은 후 y좌표에서 속도만큼 빼고, 기존 배열 형태로 재구성하여 무기 배열에 재할당시킨다.  
+
+      - 이때, 만약 무기의 상단이 프레임의 최상단에 위치할 경우 해당 이동된 무기를 프레임에서 삭제시키기 위해 y좌표 값이 0보다 큰 경우 조건을 반복문 끝에 추가한다.
+
+    - 실제 출력
+      ```py
+      screen.blit(background, (0, 0))
+      # 무기 출력
+      for weapon_x_pos, weapon_y_pos in weapons:
+        screen.blit(weapon, (weapon_x_pos, weapon_y_pos))
+
+      screen.blit(stage, (0, screen_height - stage_height))
+      screen.blit(character, (character_x_pos, character_y_pos))
+      ```
+      x좌표와 y좌표 값을 2차원 배열형태의 배열에 할당하였으므로, 루프에서 꺼내 출력한다.  
+      이때, 캐릭터의 상단위치에서 출력되어야 하므로, 배경 출력이후 & 스테이지와캐릭터 출력 이전에 출력되어야한다.
+
+
+  - [2_weapon_keyevent.py](../2_weapon_keyevent.py)
+    ```py
+    # 생략
+
+    # 무기
+    weapon = pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "weapon.png"))
+    weapon_size = weapon.get_rect().size
+    weapon_width = weapon_size[0]
+
+    # 무기목록 (1회 N발 발사)
+    weapons = []
+    weapon_speed = 10 # 무기 이동 속도
+
+    running = True
+    while running:
+      # 생략
+
+      # 이벤트 처리 (키보드, 마우스 등)
+      for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+          running = False
+        if event.type == pygame.KEYDOWN:
+          # 생략
+          # 무기 발사
+          elif event.key == pygame.K_SPACE:
+            weapon_x_pos = character_x_pos + (character_width / 2) - (weapon_width / 2) # 무기 위치 : 케릭터 중간위치
+            weapon_y_pos = character_y_pos # 무기 위치 : 케릭터 상단위치
+            weapons.append([weapon_x_pos, weapon_y_pos])
+        # 생략
+        
+      # 무기 위치 조정: 100(x), 200(y) → 180, 160, 140, ... / 500(x), 200(y) → 180, 160, 140, ...
+      weapons = [ # 무기 위치 위로 발사 (출력할 무기 목록 할당)
+        [w[0], w[1] - weapon_speed] for w in weapons 
+          if w[1] > 0 # 무기 최상단 접근시 삭제: y좌표가 0보다 클 경우에만 무기 출력(출력할 무기 목록 할당)
+      ]
+
+      screen.blit(background, (0, 0))
+      # 무기 출력
+      for weapon_x_pos, weapon_y_pos in weapons:
+        screen.blit(weapon, (weapon_x_pos, weapon_y_pos))
+
+      screen.blit(stage, (0, screen_height - stage_height))
+      screen.blit(character, (character_x_pos, character_y_pos))
+
+    # 생략
+    ```
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 ) 
+## 목차
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+
 </details>
 <br>
 <hr>
