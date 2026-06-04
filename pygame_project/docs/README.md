@@ -386,6 +386,114 @@ c) 캐릭터 출력
 <hr>
 <br>
 
+# 예제 3) 공 정의 및 공 튕기기
+
+## 목차
+a) 공 정의  
+b) 공 튀기기  
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](ballmovement.gif)
+### A) 공 정의  
+1. 리스트 타입 ball_images 변수에 공 크기별 4개의 공 이미지 파일 경로 할당
+2. 리스트 타입 ball_speed_y 변수에 공 크기에 따른 최초 속도 할당
+3. 리스트 타입 공 목록 변수 ball 선언
+4. dictionary 타입 초기 공 정의 및 balls 리스트에 append
+
+```py
+# 생략
+
+# 공 만들기 (4개 크기에 대해 따로 처리)
+ball_images = [
+  pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "ballon1.png")),
+  pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "ballon2.png")),
+  pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "ballon3.png")),
+  pygame.image.load(os.path.join(os.path.join(os.path.dirname(__file__), "img"), "ballon4.png")),
+]
+
+# 공 크기에 따른 최초 속도 정의
+ball_speed_y = [-18, -15, -12, -9]
+
+# 공 목록
+balls = []
+
+# 초기 공 정의
+balls.append({
+  "pos_x" : 50, # 공의 x좌표
+  "pos_y" : 50, # 공의 y좌표
+  "img_idx" : 0, # 공의 이미지 인덱스
+  "to_x" : 3, # x축 이동 방향(-3: 좌측, 3: 우측)
+  "to_y" : 3, # y축 이동 방향
+  "init_spd_y" : ball_speed_y[0] # y축 최초 속도
+})
+# 생략
+```
+<br>
+<hr>
+<br>
+
+### B) 공 튕기기
+1. 공 위치 정의
+2. 공 임계값 처리
+  - 가로 벽 : 반대로 튕기기(부호반전 - 기존 to_x 속성에 * -1)
+  - 세로 벽 : 스테이지 기준 속도 초기화
+  - 그 외 속도 0.5 누적 증가
+3. 공 렌더링
+
+```py
+running = True
+while running:
+  # 생략
+
+    # 생략
+
+  # 생략
+
+  # 공 위치 정의
+  for ball_idx, ball_val in enumerate(balls): # balls 리스트의 요소가 index, value - 각 공의 정보 처리로 인덱스 정보가 필요하다.
+    ball_pos_x = ball_val["pos_x"]
+    ball_pos_y = ball_val["pos_y"]
+    ball_img_idx = ball_val["img_idx"]
+
+    ball_size = ball_images[ball_img_idx].get_rect().size
+    ball_width = ball_size[0]
+    ball_height = ball_size[1]
+
+    # 공 임계값 처리 - 반대로 튕기기
+    if ball_pos_x < 0 or ball_pos_x > screen_width - ball_width: # 가로 벽
+      ball_val["to_x"] = ball_val["to_x"] * (-1) # 반대로 튕기기(부호 반전)
+    if ball_pos_y >= screen_height - stage_height - ball_height: # 세로 벽 : 스테이지 상단
+      ball_val["to_y"] = ball_val["init_spd_y"] # 반대로 튕기기: 스테이지에 닿았기 때문에 최초 속도
+    else: # 그 외 모든 경우 속도 증가
+      ball_val["to_y"] += 0.5
+    
+    # x 좌표, y 좌표에 반영 공 위치 반영
+    ball_val["pos_y"] += ball_val["to_y"]
+
+  # 생략
+
+  for idx, val in enumerate(balls):
+    ball_pos_x = val["pos_x"]
+    ball_pos_y = val["pos_y"]
+    ball_img_idx = val["img_idx"]
+    screen.blit(ball_images[ball_img_idx], (ball_pos_x, ball_pos_y))
+
+  # 생략
+
+  pygame.display.update() # 게임 화면 다시 그리기
+
+# 생략
+```
+
+</details>
+<br>
+<hr>
+<br>
+
 # 예제 ) 
 ## 목차
 

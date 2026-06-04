@@ -109,7 +109,6 @@ while running:
     ball_pos_y = ball_val["pos_y"]
     ball_img_idx = ball_val["img_idx"]
 
-
     ball_size = ball_images[ball_img_idx].get_rect().size
     ball_width = ball_size[0]
     ball_height = ball_size[1]
