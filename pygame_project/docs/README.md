@@ -438,11 +438,37 @@ balls.append({
 
 ### B) 공 튕기기
 1. 공 위치 정의
+  ```py
+  # 생략
+  running = True
+  while running:
+    # 생략
+
+    for ball_idx, ball_val in enumerate(balls): # balls 리스트의 요소가 index, value - 각 공의 정보 처리로 인덱스 정보가 필요
+      ball_pos_x = ball_val["pos_x"]
+      ball_pos_y = ball_val["pos_y"]
+      ball_img_idx = ball_val["img_idx"]
+
+      ball_size = ball_images[ball_img_idx].get_rect().size
+      ball_width = ball_size[0]
+      ball_height = ball_size[1]
+  ```
+
 2. 공 임계값 처리
+  ```py
+
+  ```
   - 가로 벽 : 반대로 튕기기(부호반전 - 기존 to_x 속성에 * -1)
   - 세로 벽 : 스테이지 기준 속도 초기화
   - 그 외 속도 0.5 누적 증가
 3. 공 렌더링
+  ```py
+  for idx, val in enumerate(balls):
+    ball_pos_x = val["pos_x"]
+    ball_pos_y = val["pos_y"]
+    ball_img_idx = val["img_idx"]
+    screen.blit(ball_images[ball_img_idx], (ball_pos_x, ball_pos_y))
+  ```
 
 ```py
 running = True
@@ -454,7 +480,7 @@ while running:
   # 생략
 
   # 공 위치 정의
-  for ball_idx, ball_val in enumerate(balls): # balls 리스트의 요소가 index, value - 각 공의 정보 처리로 인덱스 정보가 필요하다.
+  for ball_idx, ball_val in enumerate(balls): # balls 리스트의 요소가 index, value - 각 공의 정보 처리로 인덱스 정보가 필요
     ball_pos_x = ball_val["pos_x"]
     ball_pos_y = ball_val["pos_y"]
     ball_img_idx = ball_val["img_idx"]
@@ -487,6 +513,283 @@ while running:
   pygame.display.update() # 게임 화면 다시 그리기
 
 # 생략
+```
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 4) 충돌 처리
+## 목차
+a) 공 ↔ 캐릭터 : 게임 종료  
+b) 공 ↔ 무기 : 공 제거  
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+![alt text](collision.gif)
+
+### A) 공 ↔ 캐릭터 : 게임 종료
+1. 캐릭터 rect 정보 업데이트
+    ```py
+    # 생략
+    while running:
+      # 생략 (이벤트 처리, 임계값 처리)
+
+      # 공 위치 정의
+      for ball_idx, ball_val in enumerate(balls):
+        # 생략
+
+        # 캐릭터 rect 정보 업데이트
+        character_rect = character.get_rect()
+        character_rect.left = character_x_pos
+        character_rect.top = character_y_pos
+
+      # 생략
+    # 생략
+    ```
+2. 공 rect 정보 업데이트
+    ```py
+    # 생략
+    while running:
+      # 생략 (이벤트 처리, 임계값 처리)
+
+      # 공 위치 정의
+      for ball_idx, ball_val in enumerate(balls):
+        # 생략
+
+        # 캐릭터 rect 정보 업데이트
+        # 생략
+
+        # 2. 공 rect 정보 업데이트
+        for ball_idx, ball_val in enumerate(balls):
+          ball_pos_x = ball_val["pos_x"]
+          ball_pos_y = ball_val["pos_y"]
+          ball_img_idx = ball_val["img_idx"]
+
+          # 공 rect 정보 업데이트
+          ball_rect = ball_images[ball_img_idx].get_rect()
+          ball_rect.left = ball_pos_x
+          ball_rect.top = ball_pos_y
+
+      # 생략
+    # 생략
+    ```
+3. 실제 충돌 처리
+    ```py
+    # 생략
+    while running:
+      # 생략 (이벤트 처리, 임계값 처리)
+
+      # 공 위치 정의
+      for ball_idx, ball_val in enumerate(balls):
+        # 생략
+
+        for ball_idx, ball_val in enumerate(balls): 
+          # 생략
+
+          # 캐릭터 rect 정보 업데이트
+          # 생략
+
+          # 충돌 처리
+          if character_rect.colliderect(ball_rect): # 공 ↔ 캐릭터
+            running = False
+            break
+
+      # 생략
+    # 생략
+    ```
+### B) 공 ↔ 무기 : 공 제거  
+1. 무기 rect 정보 업데이트
+    ```py
+    # 생략
+    while running:
+      # 생략 (이벤트 처리, 임계값 처리)
+
+      # 공 위치 정의
+      for ball_idx, ball_val in enumerate(balls):
+        # 캐릭터 rect 정보 업데이트
+        # 생략
+
+        for ball_idx, ball_val in enumerate(balls): 
+          # 생략
+
+          # 충돌 처리 (공 ↔ 캐릭터)
+          # 생략
+
+          # 무기 rect 정보 업데이트
+          for weapon_idx, weapon_val in enumerate(weapons): # 공 ↔ 무기
+            weapon_pos_x = weapon_val[0]
+            weapon_pos_y = weapon_val[1]
+
+            weapon_rect = weapon.get_rect()
+            weapon_rect.left = weapon_pos_x
+            weapon_rect.top = weapon_pos_y
+      # 생략
+    # 생략
+    ```
+2. 충돌 처리 및 무기 제거
+    ```py
+    # 생략
+    while running:
+      # 생략 (이벤트 처리, 임계값 처리)
+
+      # 공 위치 정의
+      for ball_idx, ball_val in enumerate(balls):
+        
+        # 캐릭터 rect 정보 업데이트
+        # 생략
+
+        # 공 rect 정보 업데이트
+        for ball_idx, ball_val in enumerate(balls): 
+          # 생략
+
+          # 무기 rect 정보 업데이트
+          for weapon_idx, weapon_val in enumerate(weapons): # 공 ↔ 무기
+            # 생략
+
+            # 충돌 처리
+            if ball_rect.colliderect(weapon_rect): # 공 ↔ 무기
+              weapon_to_remove = weapon_idx # 무기 제거를 위한 값 할당
+              ball_to_remove = ball_idx # 현재 공 제거를 위한 값 할당
+              break
+
+      # 충돌된 공 혹은 무기 제거
+      if ball_to_remove > -1:
+        del balls[ball_to_remove]
+        ball_to_remove = -1 
+      if weapon_to_remove > -1:
+        del weapons[weapon_to_remove]
+        weapon_to_remove = -1
+      # 생략
+    # 생략
+    ```
+
+### 최종 코드
+```py
+# 생략
+while running:
+  # 생략 (이벤트 처리, 임계값 처리)
+  
+  # 공 위치 정의
+  for ball_idx, ball_val in enumerate(balls):
+    # 생략
+    # 캐릭터 rect 정보 업데이트
+    character_rect = character.get_rect()
+    character_rect.left = character_x_pos
+    character_rect.top = character_y_pos
+
+    # 공 rect 정보 업데이트
+    for ball_idx, ball_val in enumerate(balls): 
+      ball_pos_x = ball_val["pos_x"]
+      ball_pos_y = ball_val["pos_y"]
+      ball_img_idx = ball_val["img_idx"]
+      ball_rect = ball_images[ball_img_idx].get_rect()
+      ball_rect.left = ball_pos_x
+      ball_rect.top = ball_pos_y
+
+      # 실제 충돌 처리
+      if character_rect.colliderect(ball_rect): # 공 ↔ 캐릭터
+        running = False
+        break
+
+      for weapon_idx, weapon_val in enumerate(weapons): # 공 ↔ 무기
+        weapon_pos_x = weapon_val[0]
+        weapon_pos_y = weapon_val[1]
+
+        weapon_rect = weapon.get_rect()
+        weapon_rect.left = weapon_pos_x
+        weapon_rect.top = weapon_pos_y
+
+        if ball_rect.colliderect(weapon_rect): # 공 ↔ 무기
+          weapon_to_remove = weapon_idx # 무기 제거를 위한 값 할당
+          ball_to_remove = ball_idx # 현재 공 제거를 위한 값 할당
+          break
+
+  # 충돌된 공 혹은 무기 제거
+  if ball_to_remove > -1:
+    del balls[ball_to_remove]
+    ball_to_remove = -1 
+  if weapon_to_remove > -1:
+    del weapons[weapon_to_remove]
+    weapon_to_remove = -1
+  # 생략
+# 생략
+```
+
+
+### 중복 코드 제거
+현재 공 위치 정의를 공 위치 정의 loop 내부에서 중복으로 정의하고있다.  
+캐릭터 rect 정보 업데이트 로직을 공 위치 정의 최상위 loop 외부로 옮기고  
+임계값 처리 및 ball x,y좌표 초기화 종료 후 공 rect 정보 업데이트를 반영된 좌표를 기준으로 초기화해준다.  
+이후 실제 충돌처리 로직을 배치한다.  
+```py
+while running:
+  # 생략 (이벤트 처리, 임계값 처리)
+
+  # 4. 충돌 처리
+  # 캐릭터 rect 정보 업데이트
+  character_rect = character.get_rect()
+  character_rect.left = character_x_pos
+  character_rect.top = character_y_pos
+
+  # 공 위치 정의
+  for ball_idx, ball_val in enumerate(balls): # balls 리스트의 요소가 index, value - 각 공의 정보 처리로 인덱스 정보가 필요하다.
+    ball_pos_x = ball_val["pos_x"]
+    ball_pos_y = ball_val["pos_y"]
+    ball_img_idx = ball_val["img_idx"]
+
+    ball_rect = ball_images[ball_img_idx].get_rect()
+    ball_size = ball_rect.size
+    ball_width = ball_size[0]
+    ball_height = ball_size[1]
+
+    # 공 임계값 처리 - 반대로 튕기기
+    if ball_pos_x < 0 or ball_pos_x > screen_width - ball_width: # 가로 벽
+      ball_val["to_x"] = ball_val["to_x"] * (-1) # 반대로 튕기기(부호 반전)
+    if ball_pos_y >= screen_height - stage_height - ball_height: # 세로 벽 : 스테이지 상단
+      ball_val["to_y"] = ball_val["init_spd_y"] # 반대로 튕기기: 스테이지에 닿았기 때문에 최초 속도
+    else: # 그 외 모든 경우 속도 증가
+      ball_val["to_y"] += 0.5
+    
+    # x 좌표, y 좌표에 반영 공 위치 반영
+    ball_val["pos_x"] += ball_val["to_x"]
+    ball_val["pos_y"] += ball_val["to_y"]
+
+    # 4. 충돌 처리
+    # 공 rect 정보 업데이트
+    ball_rect.left = ball_val["pos_x"]
+    ball_rect.top = ball_val["pos_y"]
+
+    # 실제 충돌 처리
+    if character_rect.colliderect(ball_rect): # 공 ↔ 캐릭터
+      running = False
+      break
+
+    # 공 ↔ 무기
+    for weapon_idx, weapon_val in enumerate(weapons):
+      weapon_pos_x = weapon_val[0]
+      weapon_pos_y = weapon_val[1]
+
+      weapon_rect = weapon.get_rect()
+      weapon_rect.left = weapon_pos_x
+      weapon_rect.top = weapon_pos_y
+
+      if ball_rect.colliderect(weapon_rect): # 공 ↔ 무기
+        weapon_to_remove = weapon_idx # 무기 제거를 위한 값 할당
+        ball_to_remove = ball_idx # 현재 공 제거를 위한 값 할당
+        break
+
+  # 충돌된 공 혹은 무기 제거
+  if ball_to_remove > -1:
+    del balls[ball_to_remove]
+    ball_to_remove = -1 
+  if weapon_to_remove > -1:
+    del weapons[weapon_to_remove]
+    weapon_to_remove = -1
 ```
 
 </details>
