@@ -797,14 +797,115 @@ while running:
 <hr>
 <br>
 
-# 예제 ) 
+# 예제 5) 공 쪼개기
 ## 목차
+
+
 
 <br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 ) 
+## 목차
+
+A) 공 크기 정보  
+B) 나눠질 공 크기 정보  
+C) 좌/우측 튕겨나가는 공 추가  
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+공과 무기가 충돌되는 시점에 공이 쪼개져야 하므로 공과 무기의 충돌 여부를 확인하는 위치에서 공 쪼개기를 진행한다.  
+
+### A) 공 크기 정보
+가장 작은 공이 아닐 경우 쪼개져야 한다는 조건식이 필요하다.
+공의 갯수는 4개이고, index가 증가할수록 공의 크기는 작아진다.  
+최종 index가 3 이므로 3보다 작을경우가 이에 해당한다.  
+```py
+# 생략
+while running:
+  # 생략
+    # 생략
+      # 생략
+        # 생략
+        if ball_rect.colliderect(weapon_rect): # [충돌] 공 ↔ 무기
+          # 생략
+
+          # 공 쪼개기(Line 163)
+          if ball_img_idx < 3: # 가장 작은공이 아니라면 쪼개지기
+            # 현재 공 크기 정보 조회
+            ball_width = ball_rect.size[0]
+            ball_height = ball_rect.size[1]
+```
+### B) 나눠질 공 크기 정보  
+앞서 조회한 공보다 한단계 작은 공의 정보를 얻기 위해 공 이미지 배열에서 현재 index에 +1한 값으로 접근하여 공 크기의 정보를 초기화 한다.
+```py
+# 생략
+while running:
+  # 생략
+    # 생략
+      # 생략
+        # 생략
+        if ball_rect.colliderect(weapon_rect): # [충돌] 공 ↔ 무기
+          # 생략
+
+          # 공 쪼개기(Line 163)
+          if ball_img_idx < 3: # 가장 작은공이 아니라면 쪼개지기
+            # 생략
+
+            # 나눠진 공 정보
+            small_ball_rect = ball_images[ball_img_idx + 1].get_rect() # 지금 크기의 공보다 한단계 작은(idx +1) 공
+            small_ball_width = small_ball_rect.size[0]
+            small_ball_height = small_ball_rect.size[1]
+```
+### C) 좌/우측 튕겨나가는 공 추가
+```py
+# 생략
+while running:
+  # 생략
+    # 생략
+      # 생략
+        # 생략
+        if ball_rect.colliderect(weapon_rect): # [충돌] 공 ↔ 무기
+          # 생략
+
+          # 공 쪼개기(Line 163)
+          if ball_img_idx < 3:
+            # 생략
+
+            # 생략
+            
+            # 좌측으로 튕겨나가는 작은 공
+            balls.append({ 
+              "pos_x" : ball_pos_x + (ball_width/2) - (small_ball_width/2), # 공의 x좌표
+              "pos_y" : ball_pos_y + (ball_height/2) - (small_ball_height/2), # 공의 y좌표
+              "img_idx" : ball_img_idx + 1, # 공의 이미지 인덱스
+              "to_x" : -3, # x축 이동 방향(-3: 좌측, 3: 우측)
+              "to_y" : -6, # y축 이동 방향
+              "init_spd_y" : ball_speed_y[0] # y축 최초 속도
+            })
+            # 우측으로 튕겨나가는 작은 공
+            balls.append({
+              "pos_x" : ball_pos_x + (ball_width/2) - (small_ball_width/2), # 공의 x좌표
+              "pos_y" : ball_pos_y + (ball_height/2) - (small_ball_height/2), # 공의 y좌표
+              "img_idx" : ball_img_idx + 1, # 공의 이미지 인덱스
+              "to_x" : 3, # x축 이동 방향(-3: 좌측, 3: 우측)
+              "to_y" : -6, # y축 이동 방향
+              "init_spd_y" : ball_speed_y[0] # y축 최초 속도
+            })
+          break
+```
 
 </details>
 <br>
