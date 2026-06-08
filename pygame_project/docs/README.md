@@ -1018,18 +1018,3 @@ screen.blit(msg, msg_rect) # timer font 로드
 <hr>
 <br>
 
-# 예제 ) 
-## 목차
-
-
-
-<br>
-<details>
-<summary>접기/펼치기</summary>
-<br>
-
-
-</details>
-<br>
-<hr>
-<br>
