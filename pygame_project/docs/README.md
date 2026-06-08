@@ -389,8 +389,8 @@ c) 캐릭터 출력
 # 예제 3) 공 정의 및 공 튕기기
 
 ## 목차
-a) 공 정의  
-b) 공 튀기기  
+A) 공 정의  
+B) 공 튀기기  
 
 <br>
 <details>
@@ -522,15 +522,15 @@ while running:
 
 # 예제 4) 충돌 처리
 ## 목차
-a) 공 ↔ 캐릭터 : 게임 종료  
-b) 공 ↔ 무기 : 공 제거  
+A) 공 ↔ 캐릭터 : 게임 종료  
+B) 공 ↔ 무기 : 공 제거  
 
 <br>
 <details>
 <summary>접기/펼치기</summary>
 <br>
 
-![alt text](collision.gif)
+![alt text](balldivision.gif)
 
 ### A) 공 ↔ 캐릭터 : 게임 종료
 1. 캐릭터 rect 정보 업데이트
@@ -634,6 +634,12 @@ b) 공 ↔ 무기 : 공 제거
 2. 충돌 처리 및 무기 제거
     ```py
     # 생략
+
+    # 사라질 무기, 공 정보 저장 변수
+    weapon_to_remove = -1
+    ball_to_remove = -1
+
+    # 생략
     while running:
       # 생략 (이벤트 처리, 임계값 처리)
 
@@ -726,6 +732,15 @@ while running:
 캐릭터 rect 정보 업데이트 로직을 공 위치 정의 최상위 loop 외부로 옮기고  
 임계값 처리 및 ball x,y좌표 초기화 종료 후 공 rect 정보 업데이트를 반영된 좌표를 기준으로 초기화해준다.  
 이후 실제 충돌처리 로직을 배치한다.  
+
+실제로 공 위치 정의 loop 내부에서 공 위치 정의 loop가 중복으로 실행될 경우  
+무기로 공을 맞췄을 때 큰 공은 사라지지 않고 남아있으며  
+쪼개져야 하는 작은 공 2개 중 한쪽 공만 출력되는 현상이 발생했다.  
+이는 같은 프레임 안에서 중복된 공 loop가 다시 실행되면서  
+충돌된 큰 공을 제거하기 위해 저장한 ball_to_remove 값이  
+이후 생성된 작은 공의 index 값으로 다시 덮어써지기 때문이다.  
+따라서 공 위치 정의, 공 rect 정보 업데이트, 실제 충돌처리 로직은  
+하나의 공 위치 정의 loop 안에서 한 번만 순차적으로 처리되도록 정리해준다.  
 ```py
 while running:
   # 생략 (이벤트 처리, 임계값 처리)
@@ -800,22 +815,6 @@ while running:
 # 예제 5) 공 쪼개기
 ## 목차
 
-
-
-<br>
-<details>
-<summary>접기/펼치기</summary>
-<br>
-
-
-</details>
-<br>
-<hr>
-<br>
-
-# 예제 ) 
-## 목차
-
 A) 공 크기 정보  
 B) 나눠질 공 크기 정보  
 C) 좌/우측 튕겨나가는 공 추가  
@@ -825,6 +824,8 @@ C) 좌/우측 튕겨나가는 공 추가
 <details>
 <summary>접기/펼치기</summary>
 <br>
+
+![alt text](balldivision.gif)
 
 공과 무기가 충돌되는 시점에 공이 쪼개져야 하므로 공과 무기의 충돌 여부를 확인하는 위치에서 공 쪼개기를 진행한다.  
 
@@ -870,6 +871,9 @@ while running:
             small_ball_height = small_ball_rect.size[1]
 ```
 ### C) 좌/우측 튕겨나가는 공 추가
+쪼개진 공은 현재 위치에서 좌/우로 튕김과 동시에 수직 하단 방향으로 추락해야 한다.  
+좌측으로 튕겨나가는 공은 to_x 속성의 값을 -3으로, 우측으로 튕겨나가는 공은 to_x 속성의 값을 3으로 할당한다.  
+수직 하단으로 추락해야 하므로 to_y의 값은 -6을 할당한다.  
 ```py
 # 생략
 while running:
@@ -906,6 +910,124 @@ while running:
             })
           break
 ```
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 6) 게임 오버
+
+## 조건
+1. 모든 공 삭제시 게임 종료   
+2. 캐릭터 ↔ 공 충돌시 게임 종료  
+3. 제한시간 99초 초과시 게임 종료  
+
+## 목차
+A) 타이머 및 게임 종료 폰트 초기화  
+B) 각 게임 종료 조건별 종료 로직 추가  
+C) 게임 종료 폰트 출력  
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
+## 조건
+### 1. 모든 공 삭제시 게임 종료   
+![alt text](gameover_complete.gif)
+### 2. 캐릭터 ↔ 공 충돌시 게임 종료  
+![alt text](gameover_collision.gif)
+### 3. 제한시간 99초 초과시 게임 종료  
+![alt text](gameover_timeover.gif)
+
+
+### 폰트 정의
+```py
+# 생략
+# Font 정의
+game_font = pygame.font.Font(None, 40)
+total_time = 100
+start_ticks = pygame.time.get_ticks() # 시작 시간 정의
+
+# 게임 종료 메시지 - 상태에 따라 변경: Time Over(시간 초과 실패), Mission Complete(성공), Game Over(캐릭터 ↔ 공 충돌 실패)
+game_result = "Game Over" 
+
+running = True
+while running:
+  # 생략
+```
+
+### 캐릭터 ↔ 공 충돌시 게임 종료
+```py
+while running:
+  # 생략
+  
+  # 생략
+    # 실제 충돌 처리 (Line 153 ~ 157)
+    if character_rect.colliderect(ball_rect): # 공 ↔ 캐릭터
+      game_result = "Game Over"
+      running = False
+      break
+```
+
+### 모든 공 삭제시 게임 종료
+```py
+while running:
+  # 생략
+
+  # 생략: 충돌로 인한 무기 제거 로직(Line204~210)
+
+  # 모든 공을 없앤 경우 게임 종료 (성공) (Line 212~215)
+  if len(balls) == 0:
+    game_result = "Mission Complete !"
+    running = False
+```
+
+### 제한시간 99초 초과시 게임 종료
+```py
+# 생략
+while running:
+  # 생략
+
+  # 제한시간 99초 초과시 게임 종료 (Line 237 ~ 240)
+  elapsed_time = (pygame.time.get_ticks() - start_ticks) / 1000 # 경과 시간 계산(/1000 연산 : ms → s 변환)
+  timer = game_font.render("Time : {}".format(int(total_time - elapsed_time)), True, (255, 255, 255)) # 출력될 timer font 등록
+  screen.blit(timer, (10, 10)) # timer font 로드
+
+  if total_time - elapsed_time <= 0:
+    game_result = "Time Over"
+    running = False
+  # 생략
+# 생략
+```
+
+### 실제 폰트 출력
+```py
+  
+  pygame.display.update() # 게임 화면 다시 그리기 (Line 249)
+
+
+msg = game_font.render(game_result, True, (255, 255, 0)) # 노란색 출력
+msg_rect = msg.get_rect(center=(int(screen_width / 2), int(screen_height / 2))) # 화면 중앙
+screen.blit(msg, msg_rect) # timer font 로드
+```
+
+</details>
+<br>
+<hr>
+<br>
+
+# 예제 ) 
+## 목차
+
+
+
+<br>
+<details>
+<summary>접기/펼치기</summary>
+<br>
+
 
 </details>
 <br>
